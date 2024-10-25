@@ -2,7 +2,7 @@ Here's a README template tailored for your C++ Spotify API wrapper project:
 
 ---
 
-# Spotify C++ API Wrapper
+# **SpotS**: Spotify C++ API Wrapper
 
 A lightweight, modern C++17 wrapper for the [Spotify Web API](https://developer.spotify.com/documentation/web-api/) that allows easy integration with Spotify's functionality, including authentication, playlist management, track playback control, album and artist data retrieval, and more.
 
