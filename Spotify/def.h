@@ -3,12 +3,6 @@
 // Macro to determine if a web response code indicates success (i.e., within the 200–299 range).
 #define WEB_SUCCESS(res) (res >= 200 && res <= 299)
 
-// Enum for authentication types supported by the Spotify API wrapper.
-enum AUTH_TYPE {
-	AUTH_TYPE_OAUTH = 0,          // OAuth-based authentication, using an authorization code.
-	AUTH_TYPE_REFRESHTOKEN = 1     // Refresh token-based authentication, used to renew the access token.
-};
-
 // Namespace containing various Spotify API permission scopes.
 // Each scope represents a specific permission the application can request access to.
 namespace Scopes {

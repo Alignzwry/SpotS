@@ -1,6 +1,4 @@
 #include "Spotify.h"
-#include "StrUtil.h"
-#include <assert.h>
 
 /////////////////////////////////
 // Retrieves information about a specific artist by their Spotify ID.

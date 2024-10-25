@@ -1,6 +1,4 @@
 #include "Spotify.h"
-#include "StrUtil.h"
-#include <assert.h>
 
 
 /////////////////////////////////

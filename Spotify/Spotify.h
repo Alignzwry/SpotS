@@ -16,8 +16,14 @@ public:
 	// Constructs the authorization URL for the Spotify API login page with required scopes.
 	std::string getAuthUrl(const std::string& redirectUri, const std::vector<const char*>& scopes) const;
 
-	// Authenticates with Spotify using either an authorization code or a refresh token.
-	bool login(const std::string& token, AUTH_TYPE authType, const std::string& redirectUri = "");
+	// Authenticates with Spotify using either an authorization code.
+	bool auth(const std::string& authCode, const std::string& redirectUri);
+
+	// Get the access token using your refresh token.
+	bool refresh();
+
+	// Sets the refresh token.
+	void setRefreshToken(const std::string& refreshToken);
 
 	// A flag indicating if the access token should be renewed.
 	bool should_renew = false;

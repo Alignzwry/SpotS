@@ -26,8 +26,10 @@ int main()
 		std::getline(file, refresh_token);
 		file.close();
 
+		spotify.refresh_token = refresh_token;
+
 		// Login using refresh token
-		if (!spotify.login(refresh_token, AUTH_TYPE_REFRESHTOKEN, "http://localhost:" + std::to_string(PORT) + "/callback"))
+		if (!spotify.refresh())
 		{
 			std::cerr << "[ ERROR ] : Failed to login." << std::endl;
 		}
@@ -46,7 +48,7 @@ int main()
 	std::cout << "[ SUCCESS ] : Authenticated." << std::endl;
 
 	// Login using auth code
-	if (!spotify.login(auth_code, AUTH_TYPE_OAUTH, "http://localhost:" + std::to_string(PORT) + "/callback"))
+	if (!spotify.auth(auth_code, "http://localhost:" + std::to_string(PORT) + "/callback"))
 	{
 		std::cerr << "[ ERROR ] : Failed to login. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;

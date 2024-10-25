@@ -1,6 +1,4 @@
 #include "Spotify.h"
-#include "StrUtil.h"
-#include <assert.h>
 
 /////////////////////////////////
 // Retrieves the current playback state for the user.

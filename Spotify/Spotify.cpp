@@ -1,6 +1,5 @@
 #include "Spotify.h"
 #include "StrUtil.h"
-#include <assert.h>
 
 /////////////////////////////////
 // Constructs the authorization URL for the Spotify API login page with required scopes.
@@ -30,71 +29,72 @@ std::string Spotify::getAuthUrl(const std::string& redirectUri, const std::vecto
 	return url;
 }
 
+
 /////////////////////////////////
-// Authenticates with Spotify using either an authorization code or a refresh token.
+// Refreshes the access token.
+//
+// Returns:
+// - true if authentication is successful and access token is valid, otherwise false.
+bool Spotify::refresh() {
+	Net net("https://accounts.spotify.com/api/token", "POST");
+	net.addBody(
+		"grant_type=refresh_token&refresh_token=" +
+		this->refresh_token +
+		"&client_id=" +
+		this->client_id +
+		"&client_secret=" +
+		this->client_secret);
+
+	std::string token;
+	long res = net.send(token);
+	if (!WEB_SUCCESS(res)) {
+		if (this->error_tracking)
+			this->last_message = "ResponseCode = " + std::to_string(res) + "\n" + token;
+		return false;
+	}
+
+	this->access_token = util::substrBetween(token, "\"access_token\":\"", "\"");
+
+	return !this->access_token.empty();
+}
+
+// Sets the refresh token.
+void Spotify::setRefreshToken(const std::string& refreshToken) {
+	this->refresh_token = refreshToken;
+}
+
+/////////////////////////////////
+// Authenticates with Spotify using an authorization code.
 //
 // Parameters:
-// - token: The authorization code or refresh token depending on the auth type.
-// - authType: Specifies whether to use OAuth authorization (AUTH_TYPE_OAUTH) 
-//             or a refresh token (AUTH_TYPE_REFRESHTOKEN) for login.
-// - redirectUri: The URI to which Spotify will redirect after authentication. Only required for OAuth login.
+// - token: The authorization code.
+// - redirectUri: The URI to which Spotify will redirect after authentication.
 //
 // Returns:
 // - true if authentication is successful and access tokens are retrieved, otherwise false.
-bool Spotify::login(const std::string& token, AUTH_TYPE authType, const std::string& redirectUri) {
-	switch (authType) {
-	case AUTH_TYPE::AUTH_TYPE_OAUTH:
-	{
-		assert(!redirectUri.empty());
+bool Spotify::auth(const std::string& token, const std::string& redirectUri) {
+	// Request tokens from Spotify
+	Net net("https://accounts.spotify.com/api/token", "POST");
+	net.addBody(
+		"grant_type=authorization_code&code=" +
+		token +
+		"&redirect_uri=" +
+		Net::url_encode(redirectUri) +
+		"&client_id=" +
+		this->client_id +
+		"&client_secret=" +
+		this->client_secret);
 
-		// Request tokens from Spotify
-		Net net("https://accounts.spotify.com/api/token", "POST");
-		net.addBody(
-			"grant_type=authorization_code&code=" +
-			token +
-			"&redirect_uri=" + 
-			Net::url_encode(redirectUri) +
-			"&client_id=" +
-			this->client_id +
-			"&client_secret=" +
-			this->client_secret);
+	std::string response;
+	long res = net.send(response);
+	if (!WEB_SUCCESS(res))
+		return false;
 
-		std::string token;
-		long res = net.send(token);
-		if (!WEB_SUCCESS(res))
-			return false;
+	// Extract the access and refresh tokens from the response
+	this->refresh_token = util::substrBetween(response, "\"refresh_token\":\"", "\",\"");
+	this->access_token = util::substrBetween(response, "\"access_token\":\"", "\",\"");
 
-		// Extract the access and refresh tokens from the response
-		this->refresh_token = util::substrBetween(token, "\"refresh_token\":\"", "\",\"");
-		this->access_token = util::substrBetween(token, "\"access_token\":\"", "\",\"");
-
-		return !this->refresh_token.empty() && !this->access_token.empty();
-	}
-	case AUTH_TYPE::AUTH_TYPE_REFRESHTOKEN:
-	{
-		this->refresh_token = token;
-		Net net("https://accounts.spotify.com/api/token", "POST");
-		net.addBody(
-			"grant_type=refresh_token&refresh_token=" + 
-			this->refresh_token + 
-			"&client_id=" +
-			this->client_id + 
-			"&client_secret=" + 
-			this->client_secret);
-
-		std::string token;
-		long res = net.send(token);
-		if (!WEB_SUCCESS(res)) {
-			if (this->error_tracking)
-				this->last_message = "ResponseCode = " + std::to_string(res) + "\n" + token;
-			return false;
-		}
-
-		this->access_token = util::substrBetween(token, "\"access_token\":\"", "\"");
-
-		return !this->access_token.empty();
-	}
-	}
+	return !this->refresh_token.empty() && !this->access_token.empty();
 }
 
 /////////////////////////////////
