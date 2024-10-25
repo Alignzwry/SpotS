@@ -1,6 +1,10 @@
 #include "net.h"
 #include <stdexcept>
 
+// Constructor to initialize a Net object for an HTTP request.
+// Parameters:
+// - _url: The URL endpoint for the request.
+// - _method: The HTTP method to be used (e.g., "GET", "POST").
 Net::Net(std::string _url, std::string _method) {
     this->curl = curl_easy_init();
     if (!this->curl) {
@@ -10,36 +14,45 @@ Net::Net(std::string _url, std::string _method) {
 	this->method = _method;
 }
 
+// Destructor to clean up CURL.
 Net::~Net() {
     curl_easy_cleanup(curl);
 }
 
-// Add headers to the request
+// Adds a single header to the HTTP request.
+// Parameters:
+// - header: The header string to add (e.g., "Content-Type: application/json").
 void Net::addHeader(std::string header) {
     this->headers.push_back(header);
 }
 
-// Add headers to the request
+// Adds multiple headers to the HTTP request.
+// Parameters:
+// - _headers: A vector of header strings to add to the request.
 void Net::addHeader(std::vector<std::string>& _headers) {
     for (auto& header : _headers) {
         this->headers.push_back(header);
     }
 }
 
-// Add a body to the request
+// Sets the body content for the HTTP request.
+// Parameters:
+// - _body: The request body content as a string.
 void Net::addBody(std::string _body) {
     this->body = _body;
 }
 
 
-// Write callback function to store the response in a string
+// Callback function for writing response data to a string.
+// Used by CURL to store the response in a string buffer.
 inline size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* s) {
     size_t newLength = size * nmemb;
     s->append((char*)contents, newLength);
     return newLength;
 }
 
-// Write callback function to store the response in a buffer
+// Callback function for writing binary response data to a buffer.
+// Used by CURL to store the response in a vector of unsigned chars.
 inline size_t WriteCallbackBin(void* contents, size_t size, size_t nmemb, void* userp) {
     size_t totalSize = size * nmemb;
     std::vector<unsigned char>* buffer = (std::vector<unsigned char>*)userp;
@@ -47,15 +60,24 @@ inline size_t WriteCallbackBin(void* contents, size_t size, size_t nmemb, void* 
     return totalSize;
 }
 
-CURLcode Net::send(std::vector<unsigned char>& response) {
-    CURLcode res = CURLE_OK;
+// Sends the HTTP request and stores the response as a binary buffer.
+// Parameters:
+// - response: A vector to store the binary response data.
+// Returns:
+// - CURLcode indicating the success or failure of the request.
+long Net::send(std::vector<unsigned char>& response) {
 
     // Set the URL for the request
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
     // Set the method
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method.c_str());
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+
+    // Set the POST data
+    if (method != "GET") {
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body.c_str());
+    }
 
     // Specify custom headers
     struct curl_slist* _headers = NULL;
@@ -72,20 +94,26 @@ CURLcode Net::send(std::vector<unsigned char>& response) {
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 0L);
 
     // Perform the request
-    res = curl_easy_perform(curl);
+    CURLcode res = curl_easy_perform(curl);
+
+    long Return = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &Return);
 
     // Cleanup
     curl_slist_free_all(_headers);
     curl_easy_reset(curl);
-
-    // Clear headers and body
     headers.clear();
     body.clear();
 
-    // Return
-    return res;
+    //return
+    return res == CURLE_OK ? Return : -1;
 }
 
+// Sends the HTTP request and stores the response as a string.
+// Parameters:
+// - response: A string to store the response data.
+// Returns:
+// - The HTTP response code if successful, or -1 on failure.
 long Net::send(std::string& response) {
 
     // Set the URL for the request
@@ -130,8 +158,11 @@ long Net::send(std::string& response) {
 }
 
 
-// Static function
-
+// Static function to URL-encode a string for HTTP requests.
+// Parameters:
+// - decoded: The string to encode.
+// Returns:
+// - The URL-encoded version of the input string.
 std::string Net::url_encode(const std::string& decoded)
 {
     const auto encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
@@ -140,6 +171,11 @@ std::string Net::url_encode(const std::string& decoded)
     return result;
 }
 
+// Static function to URL-decode a string for HTTP responses.
+// Parameters:
+// - encoded: The URL-encoded string to decode.
+// Returns:
+// - The decoded version of the input string.
 std::string Net::url_decode(const std::string& encoded)
 {
     int output_length;

@@ -15,7 +15,7 @@ public:
 	void addBody(std::string body);
 
 	long send(std::string& response);
-	CURLcode send(std::vector<unsigned char>& response);
+	long send(std::vector<unsigned char>& response);
 
 	// Static functions
 	static std::string url_encode(const std::string& decoded);
