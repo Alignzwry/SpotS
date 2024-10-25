@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 
 #define PORT 3823
 bool auth();
-Spotify spotify("02d0f575a23f49238b5d5babe17eeb87", "8e3b5c1092c648baaf3a5424d0b2748d");
+Spotify spotify("your_client_id", "your_client_secret");
 std::string auth_code = "";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
