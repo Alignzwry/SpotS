@@ -32,7 +32,7 @@ std::string Spotify::_Artists::getArtists(const std::vector<std::string>& ids) c
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1); // Remove trailing comma
+	url.pop_back();
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -53,7 +53,7 @@ std::string Spotify::_Artists::getArtists(const std::vector<std::string>& ids) c
 // - A JSON string with album information if the request is successful, or an empty string on failure.
 std::string Spotify::_Artists::getArtistAlbums(const std::string& id, const int limit, const int offset, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/artists/" + id + "/albums?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + "&market=" + market;
+	std::string url = "https://api.spotify.com/v1/artists/" + id + "/albums?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + (market.empty() ? "" : "&market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -72,7 +72,7 @@ std::string Spotify::_Artists::getArtistAlbums(const std::string& id, const int 
 // - A JSON string with the top track information if the request is successful, or an empty string on failure.
 std::string Spotify::_Artists::getArtistTopTracks(const std::string& id, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/artists/" + id + "/top-tracks?market=" + market;
+	std::string url = "https://api.spotify.com/v1/artists/" + id + "/top-tracks" + (market.empty() ? "" : "?market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);

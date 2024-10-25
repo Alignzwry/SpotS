@@ -3,7 +3,7 @@
 
 
 namespace util {
-	std::string substrBetween(const std::string& str, const std::string& start, const std::string& end) {
+	std::string subStrBtw(const std::string& str, const std::string& start, const std::string& end) {
 		// Find the starting position of the first substring
 		size_t startPos = str.find(start);
 		if (startPos == std::string::npos) return "";
@@ -17,5 +17,4 @@ namespace util {
 		// Return the substring between the start and end positions
 		return str.substr(startPos, endPos - startPos);
 	}
-
 }

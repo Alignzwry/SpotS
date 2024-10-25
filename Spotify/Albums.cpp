@@ -13,7 +13,7 @@ using json = nlohmann::json;
 // - A JSON string with album details if the request is successful, or an empty string if there’s an error.
 std::string Spotify::_Albums::getAlbum(const std::string& id, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/albums/" + id + "?market=" + market;
+	std::string url = "https://api.spotify.com/v1/albums/" + id + (market.empty() ? "" : "?market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -36,8 +36,9 @@ std::string Spotify::_Albums::getAlbums(const std::vector<std::string>& ids, con
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
-	url += "&market=" + market;
+	url.pop_back();
+	if (!market.empty())
+		url += "&market=" + market;
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -58,7 +59,7 @@ std::string Spotify::_Albums::getAlbums(const std::vector<std::string>& ids, con
 // - A JSON string containing the album tracks if the request is successful, or an empty string if there’s an error.
 std::string Spotify::_Albums::getAlbumTracks(const std::string& id, const int limit, const int offset, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/albums/" + id + "/tracks?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + "&market=" + market;
+	std::string url = "https://api.spotify.com/v1/albums/" + id + "/tracks?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + (market.empty() ? "" : "&market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -78,7 +79,7 @@ std::string Spotify::_Albums::getAlbumTracks(const std::string& id, const int li
 // - A JSON string containing the user's saved albums if the request is successful, or an empty string if there’s an error.
 std::string Spotify::_Albums::getUserSavedAlbums(const int limit, const int offset, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/me/albums?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + "&market=" + market;
+	std::string url = "https://api.spotify.com/v1/me/albums?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + (market.empty() ? "" : "&market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -100,7 +101,7 @@ bool Spotify::_Albums::saveAlbums(const std::vector<std::string>& ids) const
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url, "PUT");
 	this->spotify->addTokenHeaderOnly(net);
@@ -122,7 +123,7 @@ bool Spotify::_Albums::unsaveAlbums(const std::vector<std::string>& ids) const
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url, "DELETE");
 	this->spotify->addTokenHeaderOnly(net);
@@ -144,7 +145,7 @@ std::vector<bool> Spotify::_Albums::getAlbumsIsSaved(const std::vector<std::stri
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -157,7 +158,7 @@ std::vector<bool> Spotify::_Albums::getAlbumsIsSaved(const std::vector<std::stri
 	}
 
 	try {
-		json j = response;
+		json j = json::parse(response);
 		std::vector<bool> result;
 		for (json::iterator it = j.begin(); it != j.end(); ++it) {
 			result.push_back(*it);

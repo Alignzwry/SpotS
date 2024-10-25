@@ -65,23 +65,24 @@ int main()
 
 _run:
 	//---Use Spotify API---//
+
 	
 	// Add Item to playlist
-	if (false && !spotify.Playlists().addItems("1DeqcInP3pv3juK2IKIhbJ", { "2gWtNqN3kP5A9Jkx2w0r2Z" })) {
+	if (!spotify.Playlists().addItems("your_playlist_id", { "your_track_id" })) {
 		std::cerr << "[ ERROR ] : Failed to add items to playlist. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;
 		return 1;
 	}
 
 	// Remove Item
-	if (!spotify.Playlists().removeItems("1DeqcInP3pv3juK2IKIhbJ", { "2gWtNqN3kP5A9Jkx2w0r2Z", "2gWtNqN3kP5A9Jkx2w0r2Z" })) {
+	if (!spotify.Playlists().removeItems("your_playlist_id", { "your_track_id" })) {
 		std::cerr << "[ ERROR ] : Failed to remove items from playlist. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;
 		return 1;
 	}
 
 	// Play a song
-	if (!spotify.Player().playTracks({ "7jd5bSsJ3pdPVDU7PdFVJL", "75tLWLJnxwe4D7x0yOMF3G" }, 20000, 0)) {
+	if (!spotify.Player().playTracks({ "your_track_id1", "your_track_id2" }, 20000, 0)) {
 		std::cerr << "[ ERROR ] : Failed to play tracks. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;
 		return 1;
@@ -123,7 +124,7 @@ void on_client_connect(SOCKET client, std::string* auth_code)
 			break;
 		}
 		std::string str(buffer, recv_size);
-		*auth_code = util::substrBetween(str, "/callback?code=", " HTTP/1.1");
+		*auth_code = util::subStrBtw(str, "/callback?code=", " HTTP/1.1");
 		if (!auth_code->empty()) {
 			break;
 		}

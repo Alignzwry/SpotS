@@ -19,7 +19,7 @@ std::string Spotify::getAuthUrl(const std::string& redirectUri, const std::vecto
 		"&scope=";
 
 	for (int i = 0; i < scopes.size(); i++) {
-		url += scopes[i];
+		url += Net::url_encode(scopes[i]);
 		if (i < scopes.size() - 1)
 			url += "%20";
 	}
@@ -53,7 +53,7 @@ bool Spotify::refresh() {
 		return false;
 	}
 
-	this->access_token = util::substrBetween(token, "\"access_token\":\"", "\"");
+	this->access_token = util::subStrBtw(token, "\"access_token\":\"", "\"");
 
 	return !this->access_token.empty();
 }
@@ -91,8 +91,8 @@ bool Spotify::auth(const std::string& token, const std::string& redirectUri) {
 		return false;
 
 	// Extract the access and refresh tokens from the response
-	this->refresh_token = util::substrBetween(response, "\"refresh_token\":\"", "\",\"");
-	this->access_token = util::substrBetween(response, "\"access_token\":\"", "\",\"");
+	this->refresh_token = util::subStrBtw(response, "\"refresh_token\":\"", "\",\"");
+	this->access_token = util::subStrBtw(response, "\"access_token\":\"", "\",\"");
 
 	return !this->refresh_token.empty() && !this->access_token.empty();
 }

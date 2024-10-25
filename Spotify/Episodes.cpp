@@ -13,7 +13,7 @@ using json = nlohmann::json;
 // - JSON response as a string containing the episode details, or an empty string if unsuccessful.
 std::string Spotify::_Episodes::getEpisode(const std::string& id, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/episodes/" + id;
+	std::string url = "https://api.spotify.com/v1/episodes/" + id + (market.empty() ? "" : "?market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -36,7 +36,10 @@ std::string Spotify::_Episodes::getEpisodes(const std::vector<std::string>& ids,
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
+
+	if (!market.empty())
+		url += "&market=" + market;
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -56,7 +59,7 @@ std::string Spotify::_Episodes::getEpisodes(const std::vector<std::string>& ids,
 // - JSON response as a string containing saved episodes, or an empty string if unsuccessful.
 std::string Spotify::_Episodes::getSavedEpisodes(const int limit, const int offset, const std::string& market) const
 {
-	std::string url = "https://api.spotify.com/v1/me/episodes?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + "&market=" + market;
+	std::string url = "https://api.spotify.com/v1/me/episodes?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + (market.empty() ? "" : "&market=" + market);
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -78,7 +81,7 @@ bool Spotify::_Episodes::saveEpisodes(const std::vector<std::string>& ids) const
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url, "PUT");
 	this->spotify->addTokenHeaderOnly(net);
@@ -100,7 +103,7 @@ bool Spotify::_Episodes::unsaveEpisodes(const std::vector<std::string>& ids) con
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url, "DELETE");
 	this->spotify->addTokenHeaderOnly(net);
@@ -123,7 +126,7 @@ std::vector<bool> Spotify::_Episodes::getEpisodesIsSaved(const std::vector<std::
 	for (std::string id : ids) {
 		url += id + ",";
 	}
-	url = url.substr(0, url.length() - 1);
+	url.pop_back();
 
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
@@ -136,7 +139,7 @@ std::vector<bool> Spotify::_Episodes::getEpisodesIsSaved(const std::vector<std::
 	}
 
 	try {
-		json j = response;
+		json j = json::parse(response);
 		std::vector<bool> result;
 		for (json::iterator it = j.begin(); it != j.end(); ++it) {
 			result.push_back(*it);
