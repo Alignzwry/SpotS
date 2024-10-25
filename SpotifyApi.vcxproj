@@ -150,21 +150,21 @@
   <ItemGroup>
     <ClCompile Include="include\Net\Net.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Spotify\Albums.cpp" />
-    <ClCompile Include="Spotify\Artists.cpp" />
-    <ClCompile Include="Spotify\Episodes.cpp" />
-    <ClCompile Include="Spotify\Player.cpp" />
-    <ClCompile Include="Spotify\Playlist.cpp" />
-    <ClCompile Include="Spotify\Search.cpp" />
-    <ClCompile Include="Spotify\Spotify.cpp" />
-    <ClCompile Include="Spotify\Track.cpp" />
-    <ClCompile Include="Spotify\User.cpp" />
+    <ClCompile Include="SpotS\Albums.cpp" />
+    <ClCompile Include="SpotS\Artists.cpp" />
+    <ClCompile Include="SpotS\Episodes.cpp" />
+    <ClCompile Include="SpotS\Player.cpp" />
+    <ClCompile Include="SpotS\Playlist.cpp" />
+    <ClCompile Include="SpotS\Search.cpp" />
+    <ClCompile Include="SpotS\Spotify.cpp" />
+    <ClCompile Include="SpotS\Track.cpp" />
+    <ClCompile Include="SpotS\User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Net\Net.h" />
-    <ClInclude Include="Spotify\def.h" />
-    <ClInclude Include="Spotify\Spotify.h" />
-    <ClInclude Include="Spotify\StrUtil.h" />
+    <ClInclude Include="SpotS\def.h" />
+    <ClInclude Include="SpotS\Spotify.h" />
+    <ClInclude Include="SpotS\StrUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
