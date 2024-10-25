@@ -65,13 +65,14 @@ std::string authUrl = spotify.getAuthUrl("your_redirect_uri", scopes);
 Once you receive the token, log in:
 
 ```cpp
-spotify.login("authcode_from_previous_step", AUTH_TYPE_OAUTH, "your_redirect_uri");
+spotify.auth("authcode_from_previous_step", "your_redirect_uri");
 ```
 
 Now you should save the refresh token (spotify.refresh_token) into a file, to load it again if needed:
 
 ```cpp
-spotify.login("your_refresh_token", AUTH_TYPE_REFRESHTOKEN, ""); // We don't need to set the redirect url here
+spotify.refresh_token = "your_refresh_token";
+spotify.refresh();
 ```
 
 ### Usage
