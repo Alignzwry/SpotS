@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include <curl/curl.h>
-#include "Spotify/Spotify.h"
-#include "Spotify/StrUtil.h"
+#include "SpotS/Spotify.h"
+#include "SpotS/StrUtil.h"
 #include <iostream>
 #include <filesystem>
 #include <fstream>
