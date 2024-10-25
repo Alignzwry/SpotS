@@ -57,7 +57,7 @@ Include the necessary headers in your code:
 To authenticate users, create an authorization URL and redirect them to Spotify's login page:
 
 ```cpp
-std::vector<const char*> scopes = {"user-read-playback-state", "user-modify-playback-state"};
+std::vector<const char*> scopes = {Scopes::user_modify_playback_state, Scopes::user_read_playback_state};
 std::string authUrl = spotify.getAuthUrl("your_redirect_uri", scopes);
 // Redirect user to authUrl and obtain the token from the redirect URI
 ```
@@ -65,7 +65,7 @@ std::string authUrl = spotify.getAuthUrl("your_redirect_uri", scopes);
 Once you receive the token, log in:
 
 ```cpp
-spotify.login("access_or_refresh_token", AUTH_TYPE::Bearer, "your_redirect_uri");
+spotify.login("authcode_from_previous_step", AUTH_TYPE_REFRESHTOKEN, "your_redirect_uri");
 ```
 
 ### Usage
