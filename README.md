@@ -32,7 +32,7 @@ A lightweight, modern C++17 wrapper for the [Spotify Web API](https://developer.
 Clone this repository and include it in your project:
 
 ```bash
-git clone https://github.com/yourusername/spotify-cpp-api-wrapper.git
+git clone https://github.com/Alignzwry/SpotS.git
 ```
 
 Include the necessary headers in your code:
@@ -65,7 +65,13 @@ std::string authUrl = spotify.getAuthUrl("your_redirect_uri", scopes);
 Once you receive the token, log in:
 
 ```cpp
-spotify.login("authcode_from_previous_step", AUTH_TYPE_REFRESHTOKEN, "your_redirect_uri");
+spotify.login("authcode_from_previous_step", AUTH_TYPE_OAUTH, "your_redirect_uri");
+```
+
+Now you should save the refresh token (spotify.refresh_token) into a file, to load it again if needed:
+
+```cpp
+spotify.login("your_refresh_token", AUTH_TYPE_REFRESHTOKEN, ""); // We don't need to set the redirect url here
 ```
 
 ### Usage
