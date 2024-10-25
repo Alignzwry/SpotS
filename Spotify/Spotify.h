@@ -13,20 +13,31 @@ public:
 	~Spotify() {};
 
 #pragma region auth
+	// Constructs the authorization URL for the Spotify API login page with required scopes.
 	std::string getAuthUrl(const std::string& redirectUri, const std::vector<const char*>& scopes) const;
 
+	// Authenticates with Spotify using either an authorization code or a refresh token.
 	bool login(const std::string& token, AUTH_TYPE authType, const std::string& redirectUri = "");
 
+	// A flag indicating if the access token should be renewed.
 	bool should_renew = false;
 #pragma endregion
 
 #pragma region errors
+	// Enables error tracking and logging.
 	void enableErrors() { this->error_tracking = true; }
+
+	// Disables error tracking and logging.
 	void disableErrors() { this->error_tracking = false; }
+
 private:
-	bool error_tracking = true;
-	std::string last_message;
+	bool error_tracking = true;  // Indicates if error tracking is enabled.
+	std::string last_message;    // Stores the last error message encountered.
+
 public:
+	// Retrieves the last error message encountered.
+	// Returns:
+	// - A string containing the last error message.
 	std::string getLastError() const { return this->last_message; }
 #pragma endregion
 
@@ -36,7 +47,6 @@ public:
 		Spotify* spotify;
 	public:
 		_Albums(Spotify* spotify) : spotify(spotify) {}
-		_Albums() = delete;
 	public:
 		std::string getAlbum(const std::string& id, const std::string& market = MARKET) const;
 		std::string getAlbums(const std::vector<std::string>& ids, const std::string& market = MARKET) const;
@@ -62,7 +72,7 @@ public:
 
 	class _Episodes {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Episodes(Spotify* spotify) : spotify(spotify) {}
 	public:
@@ -76,7 +86,7 @@ public:
 
 	class _Player {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Player(Spotify* spotify) : spotify(spotify) {}
 	public:
@@ -91,7 +101,7 @@ public:
 
 	class _Playlists {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Playlists(Spotify* spotify) : spotify(spotify) {}
 	public:
@@ -112,7 +122,7 @@ public:
 
 	class _Search {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Search(Spotify* spotify) : spotify(spotify) {}
 	public:
@@ -121,7 +131,7 @@ public:
 
 	class _Tracks {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Tracks(Spotify* spotify) : spotify(spotify) {}
 	public:
@@ -130,7 +140,7 @@ public:
 
 	class _Users {
 	private:
-		Spotify* spotify;
+		Spotify* spotify; // Reference to the parent Spotify object.
 	public:
 		_Users(Spotify* spotify) : spotify(spotify) {}
 	public:

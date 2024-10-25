@@ -5,16 +5,16 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
-
 namespace fs = std::filesystem;
 
 #define PORT 3823
-
 bool auth();
-
 Spotify spotify("02d0f575a23f49238b5d5babe17eeb87", "8e3b5c1092c648baaf3a5424d0b2748d");
-
 std::string auth_code = "";
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////              --Example Code (Don't use this)--                //////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main() 
 {
@@ -61,20 +61,24 @@ int main()
 		file.close();
 	}
 
-	// Use Spotify API
 _run:
+	//---Use Spotify API---//
+	
+	// Add Item to playlist
 	if (false && !spotify.Playlists().addItems("1DeqcInP3pv3juK2IKIhbJ", { "2gWtNqN3kP5A9Jkx2w0r2Z" })) {
 		std::cerr << "[ ERROR ] : Failed to add items to playlist. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;
 		return 1;
 	}
 
+	// Remove Item
 	if (!spotify.Playlists().removeItems("1DeqcInP3pv3juK2IKIhbJ", { "2gWtNqN3kP5A9Jkx2w0r2Z", "2gWtNqN3kP5A9Jkx2w0r2Z" })) {
 		std::cerr << "[ ERROR ] : Failed to remove items from playlist. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;
 		return 1;
 	}
 
+	// Play a song
 	if (!spotify.Player().playTracks({ "7jd5bSsJ3pdPVDU7PdFVJL", "75tLWLJnxwe4D7x0yOMF3G" }, 20000, 0)) {
 		std::cerr << "[ ERROR ] : Failed to play tracks. error:" << std::endl;
 		std::cout << spotify.getLastError() << std::endl;

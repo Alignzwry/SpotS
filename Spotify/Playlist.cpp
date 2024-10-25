@@ -3,7 +3,9 @@
 #include <assert.h>
 
 
-std::string Spotify::_Playlists::getPlaylist(const std::string& id, const std::string& market, const std::string& fields, const std::string& additional_types) const {
+/////////////////////////////////
+std::string Spotify::_Playlists::getPlaylist(const std::string& id, const std::string& market, const std::string& fields, const std::string& additional_types) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id;
 	bool has_params = false;
 	if (!market.empty()) {
@@ -29,17 +31,12 @@ std::string Spotify::_Playlists::getPlaylist(const std::string& id, const std::s
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return std::string();
-	}
-
-	return response;
+	RetErrorString;
 }
 
-std::string Spotify::_Playlists::updateDetails(const std::string& id, const std::string& name, const std::string& description, const int is_public) const {
+/////////////////////////////////
+std::string Spotify::_Playlists::updateDetails(const std::string& id, const std::string& name, const std::string& description, const int is_public) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id;
 
 	Net net(url, "PUT");
@@ -57,17 +54,12 @@ std::string Spotify::_Playlists::updateDetails(const std::string& id, const std:
 
 	net.addBody(body);
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return std::string();
-	}
-
-	return response;
+	RetErrorString;
 }
 
-std::string Spotify::_Playlists::getItems(const std::string& id, const int limit, const int offset, const std::string& market, const std::string& fields, const std::string& additional_types) const {
+/////////////////////////////////
+std::string Spotify::_Playlists::getItems(const std::string& id, const int limit, const int offset, const std::string& market, const std::string& fields, const std::string& additional_types) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id + "/tracks?limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset);
 	if (!market.empty())
 		url += "&market=" + market;
@@ -79,17 +71,12 @@ std::string Spotify::_Playlists::getItems(const std::string& id, const int limit
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return std::string();
-	}
-
-	return response;
+	RetErrorString;
 }
 
-bool Spotify::_Playlists::updateItems(const std::string& id, const std::vector<std::string>& ids, const int range_start, const int insert_before, const int range_length, const std::string& snapshot_id) const {
+/////////////////////////////////
+bool Spotify::_Playlists::updateItems(const std::string& id, const std::vector<std::string>& ids, const int range_start, const int insert_before, const int range_length, const std::string& snapshot_id) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id + "/tracks";
 
 	Net net(url, "PUT");
@@ -110,18 +97,12 @@ bool Spotify::_Playlists::updateItems(const std::string& id, const std::vector<s
 
 	net.addBody(body);
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return false;
-	}
-
-	return true;
+	RetErrorBool;
 }
 
-#include <iostream>
-bool Spotify::_Playlists::addItems(const std::string& id, const std::vector<std::string>& ids, const int position) const {
+/////////////////////////////////
+bool Spotify::_Playlists::addItems(const std::string& id, const std::vector<std::string>& ids, const int position) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id + "/tracks";
 
 	Net net(url, "POST");
@@ -140,17 +121,12 @@ bool Spotify::_Playlists::addItems(const std::string& id, const std::vector<std:
 
 	net.addBody(body);
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return false;
-	}
-
-	return true;
+	RetErrorBool;
 }
 
-bool Spotify::_Playlists::removeItems(const std::string& id, const std::vector<std::string>& ids, const std::string& snapshot_id) const {
+/////////////////////////////////
+bool Spotify::_Playlists::removeItems(const std::string& id, const std::vector<std::string>& ids, const std::string& snapshot_id) const 
+{
 	std::string url = "https://api.spotify.com/v1/playlists/" + id + "/tracks";
 
 	Net net(url, "DELETE");
@@ -166,19 +142,10 @@ bool Spotify::_Playlists::removeItems(const std::string& id, const std::vector<s
 	if (!snapshot_id.empty())
 		body += ", \"snapshot_id\": \"" + snapshot_id + "\"";
 	body += " }";
-	
-	std::cout << body << std::endl;
 
 	net.addBody(body); 
 
-	std::string response;
-	long res = net.send(response);
-	if (!WEB_SUCCESS(res)) {
-		RetError;
-		return false;
-	}
-
-	return true;
+	RetErrorBool;
 }
 
 std::string Spotify::_Playlists::getCurrentUserPlaylists(const int limit, const int offset) {
