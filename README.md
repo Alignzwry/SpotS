@@ -74,6 +74,7 @@ Now you should save the refresh token (spotify.refresh_token) into a file, to lo
 spotify.refresh_token = "your_refresh_token";
 spotify.refresh();
 ```
+Full Example in **main.cpp**
 
 ### Usage
 
