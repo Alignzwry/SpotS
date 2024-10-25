@@ -1,6 +1,6 @@
 # Spotify API Wrapper
 
-A lightweight, efficient Spotify API wrapper written in C++17 (or higher), designed to facilitate integration with Spotify's API. This library enables you to interact with Spotify's extensive catalog, manage playlists, control playback, and access user data effortlessly.
+A lightweight, efficient Spotify API wrapper written in C++17, designed to facilitate integration with Spotify's API. This library enables you to manage playlists, control playback, and access user data effortlessly and way more.
 
 ## Features
 
