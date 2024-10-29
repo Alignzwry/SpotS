@@ -159,3 +159,22 @@ bool Spotify::_Player::playTracks(const std::vector<std::string>& ids, const int
 
 	RetErrorBool;
 }
+
+/////////////////////////////////
+// Retrieves the user's recently played tracks.
+//
+// Parameters:
+// - limit: Number of tracks to retrieve (default is 10).
+// - after: Unix timestamp in milliseconds. Only retrieve tracks played after this time. Optional.
+// - before: Unix timestamp in milliseconds. Only retrieve tracks played before this time. Optional.
+//
+// Returns:
+// - A JSON string containing recently played tracks or an error message.
+std::string Spotify::_Player::getRecentlyPlayed(const int limit, const int after, const int before) const {
+	std::string url = "https://api.spotify.com/v1/me/player/recently-played?limit=" + std::to_string(limit) + (after != unused_arg_int ? "&after=" + std::to_string(after) : "") + (before != unused_arg_int ? "&before=" + std::to_string(before) : "");
+
+	Net net(url);
+	this->spotify->addDefaultHeaders(net);
+
+	RetErrorString;
+}

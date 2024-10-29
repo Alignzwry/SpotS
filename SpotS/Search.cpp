@@ -15,6 +15,13 @@
 std::string Spotify::_Search::search(const std::string& q, const std::vector<const char*>& types, const int limit, const int offset, const std::string& market) const {
 	std::string url = "https://api.spotify.com/v1/search?q=" + q + "&limit=" + std::to_string(limit) + "&offset=" + std::to_string(offset) + (market.empty() ? "" : "&market=" + market);
 
+	// Append each type to the URL
+	url += "&type=";
+	for (const char* type : types) {
+		url += std::string(type) + "%2C";
+	}
+	url = url.substr(0, url.length() - 3);
+
 	Net net(url);
 	this->spotify->addDefaultHeaders(net);
 
